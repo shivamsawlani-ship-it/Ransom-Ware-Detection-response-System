@@ -1,0 +1,70 @@
+# RDRS configuration. Relative paths are resolved from this file's folder.
+
+# Folders to watch (recursively). Keep this to a dedicated test folder
+# while developing - never point it at real personal files for testing.
+watch_folders:
+  - data/sandbox
+
+# Length of the sliding window used for detection, in seconds.
+window_seconds: 60
+
+# Extra paths to ignore. RDRS already ignores its own database, logs,
+# reports and quarantine folder.
+ignore_paths: []
+
+# Programs that do not add the "unknown_program" points (case-insensitive).
+trusted_processes:
+  - systemd
+  - explorer.exe
+  - svchost.exe
+  - chrome
+  - chrome.exe
+  - firefox
+  - firefox.exe
+  - msedge.exe
+  - code
+  - Code.exe
+  - Finder
+
+thresholds:
+  files_modified: 20        # encrypted-looking files written per window
+  renames: 15               # renames per window
+  extension_changes: 10     # extension changes per window (.docx -> .locked)
+  avg_entropy: 7.0          # average entropy of written files (0-8)
+  file_entropy: 7.2         # one file counts as "encrypted-looking" at/above this
+  min_entropy_samples: 5    # files needed before avg_entropy is trusted
+  cpu_spike_percent: 60.0   # suspect-process CPU that counts as a spike
+
+weights:                    # points added per signal; total is capped at 100
+  rapid_encryption: 40
+  mass_rename: 30
+  high_entropy: 25
+  cpu_spike: 15
+  unknown_program: 10
+
+levels:
+  warning: 40               # 40-69  -> Warning
+  critical: 70              # 70-100 -> Critical
+
+response:
+  simulation_mode: true     # keep TRUE: actions are only logged
+  terminate_enabled: false  # if true, only LOGS what would be terminated
+  quarantine_dir: data/quarantine
+  max_evidence_files: 25
+  max_evidence_file_mb: 50
+  incident_cooldown_seconds: 120   # keep larger than window_seconds
+  alert_cooldown_seconds: 30
+
+paths:
+  database: data/rdrs.db
+  log_dir: logs
+  report_dir: reports
+
+api:
+  host: 127.0.0.1           # localhost only; see README before exposing it
+  port: 8000
+
+process:
+  snapshot_interval: 5.0    # seconds between process samples when idle
+  activity_interval: 1.0    # ... while files are changing
+  top_n: 10

@@ -1,0 +1,14 @@
+services:
+  rdrs:
+    build: .
+    container_name: rdrs
+    ports:
+      - "127.0.0.1:8000:8000"   # reachable from this machine only
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./reports:/app/reports
+    environment:
+      # Optional: require this token for POST /scan, /settings and /reports
+      - RDRS_API_TOKEN=${RDRS_API_TOKEN:-}
+    restart: unless-stopped

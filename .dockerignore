@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+logs/*
+!logs/.gitkeep
+reports/
+data/*.db*
+data/quarantine/
+data/sandbox/*
+!data/sandbox/.gitkeep
